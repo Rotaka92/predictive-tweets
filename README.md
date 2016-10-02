@@ -1,4 +1,4 @@
-# predictive-crime
+# predictive-tweets
 Project Created for [Hack UMBC Fall 2016](https://hackumbc.org/)
 
 ####PURPOSE:####
@@ -14,7 +14,7 @@ The python code is able to iteratre through the csv file and search for the full
 
 ####Limitations:####
 * Some people have the same names as offenders, so searching for offenders' accounts based soley on names is not always accurate.
-* The Twitter API [limits](https://dev.twitter.com/rest/public/rate-limits) the amount of requests that can be made per 15 minutes
+* The Twitter API [limits](https://dev.twitter.com/rest/public/rate-limits) the amount of requests that can be made per 15 minutes.
 
 ####Future Ideas:####
 Create a website that embeds the flagged tweets next to side by side pictures of the Twitter user and the offender to allow humans to easily to make their own conclusion about the tweets and act accordingly.
