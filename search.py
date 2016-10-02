@@ -13,8 +13,8 @@ t = Api(
         config["consumer_key"],
         config["consumer_secret"],
         config["access_key"],
-        config["access_secret"],
-        sleep_on_rate_limit=True)
+        config["access_secret"])
+        #sleep_on_rate_limit=True)
 
 #num = 40 # max number of people to parse through
 
@@ -22,19 +22,13 @@ t = Api(
 def userSearch(term):
     term = "'" + term + "'"
     try:
-        results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
-        if len(results) < 4 and len(results) > 0:
+        results = t.GetUsersSearch(term, page=1, count=10, include_entities=None)
+        if len(results) > 0:
             return results[0].id
 
     except:
+        print "sleeping"
         time.sleep(60*5);
-        try:
-            results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
-            if len(results) < 4 and len(results) > 0:
-                return results[0].id
-        except:
-            time.sleep(60*10+5);
-
 
     return 0
 
@@ -49,13 +43,15 @@ def readFromFile():
 
     f = open('FLORIDA.csv', 'rU' ) # open the file in read universal mode
     for line in f:
-	    #if rows == num+1:
-            #    break
-	    cells = line.split(",")
-	    fullName.append(cells[0].replace(' ', '') + " " + cells[2].replace(' ', ''))
+        if rows < 1000:
+            rows = rows + 1
+            continue
 
-	    #img.append(cells[13].replace(' ', '')) # since we want only 14th column
-	    rows = rows + 1
+        cells = line.split(",")
+        fullName.append(cells[0].replace(' ', '') + " " + cells[2].replace(' ', ''))
+
+        #img.append(cells[13].replace(' ', '')) # since we want only 14th column
+        rows = rows + 1
 
     f.close()
     fullName.pop(0) # remove column title
@@ -71,37 +67,43 @@ def flagTweet(txt):
     return any(sub in txt for sub in flags)
 
 
+def checkTweets(user_id):
+    try:
+        tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+
+        # search through user's timeline
+        for tweet in tweetList:
+            print "\t" + tweet.text
+
+            if flagTweet(tweet.text):
+                print "************FLAGGED: " + str(user_id) + " (" + n + ")**************"
+                print "https://twitter.com/statuses/" + str(tweet.id) + "/"
+    except:
+        print "exception"
+        #print "\nsleeping..."
+        #time.sleep(60*5);
+
 
 users = [] # ids of found users (not guranteed to be the target's account)
 
 print "parsing through file..."
 names = readFromFile()
 
-print "searching for users...\n\n"
+count = 0;
+
+print "searching for " + str(len(names)) + " users...\n\n"
 for n in names:
+    #print " searching for account for " + n
     user_id = userSearch(n);
 
     if user_id != 0:
+        print "\n\n\n_______found account " + str(user_id) + " for " + n + "__________ "
         users.append(user_id)
+        checkTweets(user_id)
+
+
         #print "\n\n________analyzing " + str(user_id) + " (" + n + ")________"
-        try:
-            tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
-            # search through user's timeline
-            for tweet in tweetList:
-                if flagTweet(tweet.text):
-                    print "\n\n************FLAGGED: " + str(user_id) + " (" + n + ")**************"
-                    print "https://twitter.com/statuses/" + str(tweet.id) + "/"
-        except:
-            time.sleep(60*5);
-            try:
-                tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
-                # search through user's timeline
-                for tweet in tweetList:
-                    if flagTweet(tweet.text):
-                        print "\n\n************FLAGGED: " + str(user_id) + " (" + n + ")**************"
-                        print "https://twitter.com/statuses/" + str(tweet.id) + "/"
-            except:
-                time.sleep(60*10+5);
+        time.sleep(5);
 
 
 
