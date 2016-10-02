@@ -2,22 +2,27 @@
 import os
 import json
 from twitter import Api
-
 import urllib
 import itertools
 
 config = {}
 execfile("config.py", config)
-t = Api(config["consumer_key"], config["consumer_secret"], config["access_key"], config["access_secret"])
+# initiate python-twitter API object. http://python-twitter.readthedocs.io/
+t = Api(
+        config["consumer_key"],
+        config["consumer_secret"],
+        config["access_key"],
+        config["access_secret"],
+        sleep_on_rate_limit=True)
 
-num = 40 # max number of people to parse through
+#num = 40 # max number of people to parse through
 
 
 def userSearch(term):
     term = "'" + term + "'"
-    results = t.GetUsersSearch(term, page=1, count=20, include_entities=None)
+    results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
 
-    if len(results) < 5 and len(results) > 0:
+    if len(results) < 4 and len(results) > 0:
         return results[0].id
 
     return 0
@@ -33,41 +38,58 @@ def readFromFile():
 
     f = open('FLORIDA.csv', 'rU' ) # open the file in read universal mode
     for line in f:
-	    if rows == num+1:
-                break
+	    #if rows == num+1:
+            #    break
 	    cells = line.split(",")
 	    fullName.append(cells[0].replace(' ', '') + " " + cells[2].replace(' ', ''))
 
-	    img.append(cells[13].replace(' ', '')) # since we want only 14th column
-	    firstName.append(cells[0].replace(' ', ''))
-	    lastName.append(cells[2].replace(' ', ''))
-	    weight.append(cells[8].replace(' ', ''))
+	    #img.append(cells[13].replace(' ', '')) # since we want only 14th column
+	    #firstName.append(cells[0].replace(' ', ''))
+	    #lastName.append(cells[2].replace(' ', ''))
+	    #weight.append(cells[8].replace(' ', ''))
 	    rows = rows + 1
 
     f.close()
-    img.pop(0) # remove column title
-    firstName.pop(0) # remove column title
-    lastName.pop(0)
     fullName.pop(0) # remove column title
-    weight.pop(0)
+    #img.pop(0) # remove column title
+    #firstName.pop(0) # remove column title
+    #lastName.pop(0)
+    #weight.pop(0)
+    #firstName = map(str.lower, firstName) # makes the names uppercase
+    #lastName = map(str.lower, lastName) # makes the names uppercase
 
     return fullName
 
-    firstName = map(str.lower, firstName) # makes the names uppercase
-    lastName = map(str.lower, lastName) # makes the names uppercase
-
-    for x in range(rows-1):
-	    print firstName[x] + " " + lastName[x]
 
 
+# keywords to look for in tweets
+flags = ['bomb', 'murder', 'rape', 'kill', 'sex', 'hate', "fuck", "vagina", "penis", "shoot", "revenge"];
+
+def flagTweet(txt):
+    txt = txt.lower()
+    return any(sub in txt for sub in flags)
+
+
+
+users = [] # ids of found users (not guranteed to be the target's account)
+
+print "parsing through file..."
 names = readFromFile()
+
+print "searching for users...\n\n"
 for n in names:
-    res = userSearch(n);
-    if res != 0:
-       print res
-       print ""
-       print ""
+    user_id = userSearch(n);
+
+    if user_id != 0:
+        users.append(user_id)
+        #print "\n\n________analyzing " + str(user_id) + " (" + n + ")________"
+        tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+
+        # search through user's timeline
+        for tweet in tweetList:
+            if flagTweet(tweet.text):
+                #print "\n\n************FLAGGED: " + str(user_id) + "**************"
+                print "https://twitter.com/statuses/" + str(tweet.id) + "/"
 
 
-    #print n + ", " + str(len(res))
-print "end"
+print "\n\nscript complete"
