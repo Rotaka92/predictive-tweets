@@ -6,7 +6,7 @@ To parse through lists of sexual offenders and attempt to find their twitter acc
 
 ####REQUIREMENTS:####
 * [Python 2.7](https://www.python.org/download/releases/2.7/)
-* [http://offender.fdle.state.fl.us/offender/publicDataFile.do](Offender Data in CSV File)
+* [Offender Data in CSV File](http://offender.fdle.state.fl.us/offender/publicDataFile.do)
 * [python-twitter module](http://python-twitter.readthedocs.io/)
 
 ####RESULTS:####
