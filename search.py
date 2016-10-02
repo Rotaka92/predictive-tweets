@@ -44,26 +44,16 @@ def readFromFile():
 	    fullName.append(cells[0].replace(' ', '') + " " + cells[2].replace(' ', ''))
 
 	    #img.append(cells[13].replace(' ', '')) # since we want only 14th column
-	    #firstName.append(cells[0].replace(' ', ''))
-	    #lastName.append(cells[2].replace(' ', ''))
-	    #weight.append(cells[8].replace(' ', ''))
 	    rows = rows + 1
 
     f.close()
     fullName.pop(0) # remove column title
-    #img.pop(0) # remove column title
-    #firstName.pop(0) # remove column title
-    #lastName.pop(0)
-    #weight.pop(0)
-    #firstName = map(str.lower, firstName) # makes the names uppercase
-    #lastName = map(str.lower, lastName) # makes the names uppercase
-
     return fullName
 
 
 
 # keywords to look for in tweets
-flags = ['bomb', 'murder', 'rape', 'kill', 'sex', 'hate', "fuck", "vagina", "penis", "shoot", "revenge"];
+flags = ['bomb', 'strangle', 'stab', 'decapitate', 'suicide', 'slaughter', 'assault', 'weapon', 'murder', 'rape', 'kill', 'sex', 'hate', "fuck", "vagina", "penis", "shoot", "revenge"];
 
 def flagTweet(txt):
     txt = txt.lower()
