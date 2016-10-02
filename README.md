@@ -1,17 +1,16 @@
 # predictive-crime
-
 Project Created for [Hack UMBC Fall 2016](https://hackumbc.org/)
 
 ####PURPOSE:####
 To parse through lists of sexual offenders and attempt to find their twitter accounts and flag tweets that could indicate potential threats.
 
 ####REQUIREMENTS:####
-* Python 2.7
+* [Python 2.7](https://www.python.org/download/releases/2.7/)
 * [http://offender.fdle.state.fl.us/offender/publicDataFile.do](Offender Data in CSV File)
 * [python-twitter module](http://python-twitter.readthedocs.io/)
 
 ####RESULTS:####
-The python code is able to iteratre through the csv file and search for the full name of offenders on twitter and view the latest tweets of the first user result.  These tweets are then flagged simply by whether they contain keywords stored in the array flags[].  
+The python code is able to iteratre through the csv file and search for the full name of offenders on twitter and view the latest tweets of the first user result.  These tweets are then flagged simply by whether they contain keywords stored in the array flags[ ].  
 
 ####Limitations:####
 * Some people have the same names as offenders, so searching for offenders' accounts based soley on names is not always accurate.
