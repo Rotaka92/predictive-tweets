@@ -28,7 +28,7 @@ def userSearch(term):
 
     except:
         print "sleeping"
-        time.sleep(60*5);
+        time.sleep(60*1);
 
     return 0
 
@@ -43,7 +43,7 @@ def readFromFile():
 
     f = open('FLORIDA.csv', 'rU' ) # open the file in read universal mode
     for line in f:
-        if rows < 1000:
+        if rows < 15000:
             rows = rows + 1
             continue
 
@@ -73,11 +73,11 @@ def checkTweets(user_id):
 
         # search through user's timeline
         for tweet in tweetList:
-            print "\t" + tweet.text
+            #print "\t" + tweet.text
 
             if flagTweet(tweet.text):
                 print "************FLAGGED: " + str(user_id) + " (" + n + ")**************"
-                print "https://twitter.com/statuses/" + str(tweet.id) + "/"
+                print "https://twitter.com/statuses/" + str(tweet.id) + "/\n"
     except:
         print "exception"
         #print "\nsleeping..."
@@ -97,13 +97,13 @@ for n in names:
     user_id = userSearch(n);
 
     if user_id != 0:
-        print "\n\n\n_______found account " + str(user_id) + " for " + n + "__________ "
+        #print "\n\n\n_______found account " + str(user_id) + " for " + n + "__________ "
         users.append(user_id)
         checkTweets(user_id)
 
 
         #print "\n\n________analyzing " + str(user_id) + " (" + n + ")________"
-        time.sleep(5);
+        time.sleep(2);
 
 
 
