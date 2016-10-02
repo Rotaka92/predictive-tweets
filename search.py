@@ -43,14 +43,8 @@ def readFromFile():
 
     f = open('FLORIDA.csv', 'rU' ) # open the file in read universal mode
     for line in f:
-        if rows < 15000:
-            rows = rows + 1
-            continue
-
         cells = line.split(",")
         fullName.append(cells[0].replace(' ', '') + " " + cells[2].replace(' ', ''))
-
-        #img.append(cells[13].replace(' ', '')) # since we want only 14th column
         rows = rows + 1
 
     f.close()
@@ -58,9 +52,8 @@ def readFromFile():
     return fullName
 
 
-
 # keywords to look for in tweets
-flags = ['bomb', 'strangle', 'stab', 'decapitate', 'suicide', 'slaughter', 'assault', 'weapon', 'murder', 'rape', 'kill', 'sex', 'hate', "fuck", "vagina", "penis", "shoot", "revenge"];
+flags = ['bomb', 'strangle', 'stab', 'decapitate', 'suicide', 'slaughter', 'assault', 'weapon', 'murder', 'rape', 'kill', 'sex', 'hate', "shoot", "revenge"];
 
 def flagTweet(txt):
     txt = txt.lower()
@@ -69,7 +62,7 @@ def flagTweet(txt):
 
 def checkTweets(user_id):
     try:
-        tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+        tweetList = t.GetUserTimeline(user_id) # get latest tweets from user
 
         # search through user's timeline
         for tweet in tweetList:
@@ -79,17 +72,13 @@ def checkTweets(user_id):
                 print "************FLAGGED: " + str(user_id) + " (" + n + ")**************"
                 print "https://twitter.com/statuses/" + str(tweet.id) + "/\n"
     except:
-        print "exception"
-        #print "\nsleeping..."
-        #time.sleep(60*5);
+        print "exception" # could be due to account being set to private
+
 
 
 users = [] # ids of found users (not guranteed to be the target's account)
-
 print "parsing through file..."
 names = readFromFile()
-
-count = 0;
 
 print "searching for " + str(len(names)) + " users...\n\n"
 for n in names:
@@ -101,10 +90,8 @@ for n in names:
         users.append(user_id)
         checkTweets(user_id)
 
-
         #print "\n\n________analyzing " + str(user_id) + " (" + n + ")________"
-        time.sleep(2);
-
+        time.sleep(2); # slow down output for demonstration purposes
 
 
 print "\n\nscript complete"
