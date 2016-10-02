@@ -4,6 +4,7 @@ import json
 from twitter import Api
 import urllib
 import itertools
+import time
 
 config = {}
 execfile("config.py", config)
@@ -20,10 +21,20 @@ t = Api(
 
 def userSearch(term):
     term = "'" + term + "'"
-    results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
+    try:
+        results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
+        if len(results) < 4 and len(results) > 0:
+            return results[0].id
 
-    if len(results) < 4 and len(results) > 0:
-        return results[0].id
+    except:
+        time.sleep(60*5);
+        try:
+            results = t.GetUsersSearch(term, page=1, count=7, include_entities=None)
+            if len(results) < 4 and len(results) > 0:
+                return results[0].id
+        except:
+            time.sleep(60*10+5);
+
 
     return 0
 
@@ -73,13 +84,25 @@ for n in names:
     if user_id != 0:
         users.append(user_id)
         #print "\n\n________analyzing " + str(user_id) + " (" + n + ")________"
-        tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+        try:
+            tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+            # search through user's timeline
+            for tweet in tweetList:
+                if flagTweet(tweet.text):
+                    print "\n\n************FLAGGED: " + str(user_id) + " (" + n + ")**************"
+                    print "https://twitter.com/statuses/" + str(tweet.id) + "/"
+        except:
+            time.sleep(60*5);
+            try:
+                tweetList = t.GetUserTimeline(user_id) # get latest tweets of user
+                # search through user's timeline
+                for tweet in tweetList:
+                    if flagTweet(tweet.text):
+                        print "\n\n************FLAGGED: " + str(user_id) + " (" + n + ")**************"
+                        print "https://twitter.com/statuses/" + str(tweet.id) + "/"
+            except:
+                time.sleep(60*10+5);
 
-        # search through user's timeline
-        for tweet in tweetList:
-            if flagTweet(tweet.text):
-                #print "\n\n************FLAGGED: " + str(user_id) + "**************"
-                print "https://twitter.com/statuses/" + str(tweet.id) + "/"
 
 
 print "\n\nscript complete"
