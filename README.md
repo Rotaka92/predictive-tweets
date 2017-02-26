@@ -2,7 +2,7 @@
 Project Created for [Hack UMBC Fall 2016](https://hackumbc.org/)
 
 ####PURPOSE:####
-To parse through lists of sexual offenders and attempt to find their twitter accounts and flag tweets that could indicate potential threats.
+To parse through lists of criminal offenders and attempt to find their twitter accounts and flag tweets that could indicate potential threats.
 
 ####REQUIREMENTS:####
 * [Python 2.7](https://www.python.org/download/releases/2.7/)
